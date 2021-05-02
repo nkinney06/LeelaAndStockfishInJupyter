@@ -1,0 +1,150 @@
+version: '3'
+services:
+   this_leela:
+      container_name: leela
+      image: leela:latest
+      ports:
+         - 8888:8888
+      stdin_open: true
+      tty: true
+      volumes:
+         - .:/src/notebooks
+      environment:
+         - LC_ALL=C.UTF-8
+         - LANG=C.UTF-8
+   this_postgres:
+      build: docker/postgres
+      environment:
+         - POSTGRES_PASSWORD=pw4nick
+      volumes:
+         - postgres_data:/var/lib/postgresql/data
+   this_redis:
+      image: redis
+      volumes:
+         - redis_data:/data
+   this_worker_1:
+      build: docker/leela
+      volumes:
+         - .:/src/notebooks
+      entrypoint:
+         - "tini"
+         - "--"
+         - "rqworker"
+         - "-u"
+         - "redis://this_redis:6379"
+      environment:
+         - LC_ALL=C.UTF-8
+         - LANG=C.UTF-8
+   this_worker_2:
+      build: docker/leela
+      volumes:
+         - .:/src/notebooks
+      entrypoint:
+         - "tini"
+         - "--"
+         - "rqworker"
+         - "-u"
+         - "redis://this_redis:6379"
+      environment:
+         - LC_ALL=C.UTF-8
+         - LANG=C.UTF-8
+   this_worker_3:
+      build: docker/leela
+      volumes:
+         - .:/src/notebooks
+      entrypoint:
+         - "tini"
+         - "--"
+         - "rqworker"
+         - "-u"
+         - "redis://this_redis:6379"
+      environment:
+         - LC_ALL=C.UTF-8
+         - LANG=C.UTF-8
+   this_worker_4:
+      build: docker/leela
+      volumes:
+         - .:/src/notebooks
+      entrypoint:
+         - "tini"
+         - "--"
+         - "rqworker"
+         - "-u"
+         - "redis://this_redis:6379"
+      environment:
+         - LC_ALL=C.UTF-8
+         - LANG=C.UTF-8
+   this_worker_5:
+      build: docker/leela
+      volumes:
+         - .:/src/notebooks
+      entrypoint:
+         - "tini"
+         - "--"
+         - "rqworker"
+         - "-u"
+         - "redis://this_redis:6379"
+      environment:
+         - LC_ALL=C.UTF-8
+         - LANG=C.UTF-8
+   this_worker_6:
+      build: docker/leela
+      volumes:
+         - .:/src/notebooks
+      entrypoint:
+         - "tini"
+         - "--"
+         - "rqworker"
+         - "-u"
+         - "redis://this_redis:6379"
+      environment:
+         - LC_ALL=C.UTF-8
+         - LANG=C.UTF-8
+   this_worker_7:
+      build: docker/leela
+      volumes:
+         - .:/src/notebooks
+      entrypoint:
+         - "tini"
+         - "--"
+         - "rqworker"
+         - "-u"
+         - "redis://this_redis:6379"
+      environment:
+         - LC_ALL=C.UTF-8
+         - LANG=C.UTF-8
+   this_worker_8:
+      build: docker/leela
+      volumes:
+         - .:/src/notebooks
+      entrypoint:
+         - "tini"
+         - "--"
+         - "rqworker"
+         - "-u"
+         - "redis://this_redis:6379"
+      environment:
+         - LC_ALL=C.UTF-8
+         - LANG=C.UTF-8
+   this_monitor:
+      build: docker/leela
+      volumes:
+         - .:/src/notebooks
+      ports:
+         - "5000:5000"
+      entrypoint:
+         - "tini"
+         - "--"
+         - "rq-dashboard"
+         - "-H"
+         - "this_redis"
+         - "-p"
+         - "5000"   
+      environment:
+         - LC_ALL=C.UTF-8
+         - LANG=C.UTF-8
+volumes:
+   postgres_data:
+   redis_data:
+
+

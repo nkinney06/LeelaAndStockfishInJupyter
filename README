@@ -1,0 +1,30 @@
+
+go to the docker/leela directory
+edit the settings.json file accordingly
+run the following command
+
+sudo docker build -t leela .
+
+if this command fails and complains abount meson or whatever try running it again 
+I dont know why but running it again worked for me. Ive had to run it up to three
+time to get it to work. Then go to the base directory LeelaAndStockfishInJupyter/ 
+and run the following command
+
+sudo docker-compose build (if this fails literally run the same command again)
+
+
+from the base directory run the following:
+
+sudo docker-compose up -d
+sudo docker exec leela jupyter notebook list
+
+ - this command will output something like:
+   Currently running servers:
+   http://0.0.0.0:8888/?token=66322c02303f332fa8513759d821sadgssgddddd8c242dc7 :: /src/notebooks
+
+ - you should copy pasta the url and token into your browser
+   http://0.0.0.0:8888/?token=66322c02303f332fa8513754b14fddd8c242dasdhhadfhc7
+
+ - make sure to replace 0.0.0.0 with your ip or 127.0.0.1
+	
+
