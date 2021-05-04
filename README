@@ -1,7 +1,16 @@
+(5/3/2021) update leela seems to be working as background redis jobs
+I still need to clean up some stuff and plan to add an inline jupyter
+game viewer to more easily browse the database. check back for updates.
 
+INSTRUCTIONS
 go to the docker/leela directory
+
 edit the settings.json file accordingly
-run the following command
+
+you may also need to recreate the supervisord.conf
+file with the createSuper.py script: python createSuper.py > supervisord.conf
+
+then run the following command
 
 sudo docker build -t leela .
 

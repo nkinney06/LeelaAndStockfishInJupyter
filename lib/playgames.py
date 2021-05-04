@@ -1,5 +1,6 @@
 """functions for playing games"""
-
+import os
+os.chdir('/src/notebooks')
 import chess
 import chess.engine
 import chess.svg
@@ -7,19 +8,11 @@ import chess.pgn
 import chess.polyglot
 import lib.postgres as psql
 import io
-import os
 
-### this function is broken, used to work, not sure what is wrong
-def playGame( whiteName,blackName,timePerMove,line ):
+def playGame(timePerMove,openingString,playerWhite,playerBlack):
     os.chdir('/src/notebooks')
-    if whiteName == 'leela':
-        white = chess.engine.SimpleEngine.popen_uci("/lczero/lc0")
-        black = chess.engine.SimpleEngine.popen_uci("/root/Stockfish/src/stockfish")
-    else:
-        black = chess.engine.SimpleEngine.popen_uci("/lczero/lc0")
-        white = chess.engine.SimpleEngine.popen_uci("/root/Stockfish/src/stockfish")
     board = chess.Board()
-    openingGame = chess.pgn.read_game(io.StringIO(line))
+    openingGame = chess.pgn.read_game(io.StringIO(openingString))
     game = chess.pgn.Game()
 
     for move in openingGame.mainline_moves():
@@ -28,22 +21,67 @@ def playGame( whiteName,blackName,timePerMove,line ):
         else:
             node = node.add_variation(chess.Move.from_uci(str(move)))
         board.push(chess.Move.from_uci(str(move)))
-        
+
+    leela = chess.engine.SimpleEngine.popen_uci("/lczero/lc0")
+    stockfish = chess.engine.SimpleEngine.popen_uci("/root/Stockfish/src/stockfish")
+
     while not board.is_game_over(claim_draw=True):
         if board.turn:
-            result = white.play(board, chess.engine.Limit(time=timePerMove))
+            if playerWhite == "leela":
+                result = leela.play(board, chess.engine.Limit(time=timePerMove))
+            else:
+                result = stockfish.play(board, chess.engine.Limit(time=timePerMove))
         else:
-            result = black.play(board, chess.engine.Limit(time=timePerMove))
-
+            if playerBlack == "leela":
+                result = leela.play(board, chess.engine.Limit(time=timePerMove))
+            else:
+                result = stockfish.play(board, chess.engine.Limit(time=timePerMove))
+            result = stockfish.play(board, chess.engine.Limit(time=timePerMove))
         node = node.add_variation(result.move)
         board.push(result.move)
 
     game.headers["Result"] = board.result()
-    game.headers["White"] = whiteName
-    game.headers["Black"] = blackName
+    game.headers["White"] = playerWhite
+    game.headers["Black"] = playerBlack
     psql.insert_game(game,timePerMove)
-    
-    
+
+
+#def playGame(timePerMove,openingString,playerWhite,playerBlack):
+#    os.chdir('/src/notebooks')
+#    board = chess.Board()
+#    openingGame = chess.pgn.read_game(io.StringIO(openingString))
+#    game = chess.pgn.Game()
+
+#    for move in openingGame.mainline_moves():
+#        if ((board.fullmove_number == 1) & board.turn):
+#            node = game.add_variation(chess.Move.from_uci(str(move)))
+#        else:
+#            node = node.add_variation(chess.Move.from_uci(str(move)))
+#        board.push(chess.Move.from_uci(str(move)))
+
+#    leela = chess.engine.SimpleEngine.popen_uci("/lczero/lc0")
+#    stockfish = chess.engine.SimpleEngine.popen_uci("/root/Stockfish/src/stockfish")
+
+#    while not board.is_game_over(claim_draw=True):
+#        if board.turn:
+#            if playerWhite == "leela":
+#                result = leela.play(board, chess.engine.Limit(time=timePerMove))
+#            else:
+#                result = stockfish.play(board, chess.engine.Limit(time=timePerMove))
+#        else:
+#            if playerBlack == "leela":
+#                result = leela.play(board, chess.engine.Limit(time=timePerMove))
+#            else:
+#                result = stockfish.play(board, chess.engine.Limit(time=timePerMove))
+#            result = stockfish.play(board, chess.engine.Limit(time=timePerMove))
+#        node = node.add_variation(result.move)
+#        board.push(result.move)
+
+#    game.headers["Result"] = board.result()
+#    game.headers["White"] = playerWhite
+#    game.headers["Black"] = playerBlack
+#    psql.insert_game(game,timePerMove)
+
 
 def playMatch(player_white,player_black,games,dep):
     score = 0

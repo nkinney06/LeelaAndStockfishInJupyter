@@ -40,15 +40,14 @@ RUN mkdir /lczero && \
 #    ./build.sh
 
 RUN cp /root/lc0/build/release/lc0 /lczero && \
-    # cp ../LS15-20x256SE-jj-9-75000000.pb /lczero/ && \ (still having trouble with larger nets)
     file /lczero/lc0 && \
     chmod +x /lczero/lc0
 
 RUN cd /lczero && \
     wget https://github.com/LeelaChessZero/lczero-client/releases/download/v29/lc0-training-client-linux && \
     chmod +x lc0-training-client-linux && \
-    wget http://storage.lczero.org/files/networks-contrib/J20-460
-    # wget http://storage.lczero.org/files/networks-contrib/J94-130 (I had some trouble getting the larger nets working)
+    wget http://storage.lczero.org/files/networks-contrib/J64-210
+    # wget https://storage.lczero.org/files/networks-contrib/J92-280
 
 RUN mkdir /Stockfish && \
     cd ~ && \
@@ -64,5 +63,4 @@ COPY settings.json /lczero/settings.json
 RUN service supervisor start
 
 CMD ["jupyter", "notebook", "--port=8888", "--no-browser", "--ip=0.0.0.0", "--allow-root"]
-
 
