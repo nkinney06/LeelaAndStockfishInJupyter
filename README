@@ -1,3 +1,4 @@
+(5/5/2021) update added an inline game viewer. Kinda sloppy but its a start
 (5/3/2021) update leela seems to be working as background redis jobs
 I still need to clean up some stuff and plan to add an inline jupyter
 game viewer to more easily browse the database. check back for updates.

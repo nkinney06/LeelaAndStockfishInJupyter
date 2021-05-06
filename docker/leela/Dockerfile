@@ -2,6 +2,7 @@ FROM nvidia/cuda:10.0-cudnn7-devel
 
 RUN apt-get update && apt-get dist-upgrade -y && apt clean all
 RUN apt-get update && apt-get install -y curl wget supervisor git clang-6.0 ninja-build protobuf-compiler libprotobuf-dev python3-pip && apt-get clean all
+RUN apt-get install -y inkscape
 RUN pip3 install --upgrade pip
 RUN pip3 install meson
 RUN pip3 install python-chess==0.28.0
@@ -18,26 +19,18 @@ RUN pip3 install psycopg2-binary
 RUN pip3 install redis==3.5.2
 RUN pip3 install rq==1.5.2
 RUN pip3 install rq-dashboard
-#RUN pip3 install numpy
-#RUN pip3 install pillow
-#RUN pip3 install matplotlib
-#RUN pip3 install scipy
-#RUN pip3 install tensorflow
+RUN pip3 install numpy
+RUN pip3 install pillow
+RUN pip3 install matplotlib
+RUN pip3 install scipy
 
 ENTRYPOINT ["/usr/bin/tini", "--"]
-
 
 RUN mkdir /lczero && \
     cd ~ && \
     git clone -b release/0.21 --recurse-submodules https://github.com/LeelaChessZero/lc0.git && \
     cd lc0 &&\
     ./build.sh
-
-#RUN mkdir /lczero && \
-#    cd ~ && \
-#    git clone -b release/0.26 --recurse-submodules https://github.com/LeelaChessZero/lc0.git && \
-#    cd lc0 &&\
-#    ./build.sh
 
 RUN cp /root/lc0/build/release/lc0 /lczero && \
     file /lczero/lc0 && \
@@ -47,7 +40,6 @@ RUN cd /lczero && \
     wget https://github.com/LeelaChessZero/lczero-client/releases/download/v29/lc0-training-client-linux && \
     chmod +x lc0-training-client-linux && \
     wget http://storage.lczero.org/files/networks-contrib/J64-210
-    # wget https://storage.lczero.org/files/networks-contrib/J92-280
 
 RUN mkdir /Stockfish && \
     cd ~ && \
